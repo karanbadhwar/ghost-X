@@ -1,0 +1,15 @@
+export enum FilterAction {
+  LOAD_PRODUCTS = "LOAD_PRODUCTS",
+  SET_GRIDVIEW = "SET_GRIDVIEW",
+  SET_LISTVIEW = "SET_LISTVIEW",
+  UPDATE_SORT = "UPDATE_SORT",
+  SORT_PRODUCTS = "SORT_PRODUCT",
+  UPDATE_FILTERS = "UPDATE_FILTERS",
+  FILTER_PRODUCTS = "FILTER_PRODUCTS",
+  CLEAR_FILTERS = "CLEAR_FILTERS",
+}
+
+export interface IFitlerAction {
+  type: FilterAction;
+  payload?: any;
+}
