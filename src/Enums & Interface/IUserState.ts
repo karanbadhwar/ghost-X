@@ -12,7 +12,7 @@ export interface IUserState {
     options?: RedirectLoginOptions<AppState> | undefined | any
   ) => Promise<void>;
   // loginWithRedirect: any;
-  myUser: ImyUser | boolean;
+  myUser: ImyUser;
   isLoading?: boolean;
 }
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { loadStripe } from "@stripe/stripe-js";
+import { StripeCardElementChangeEvent, loadStripe } from "@stripe/stripe-js";
 import {
   CardElement,
   useStripe,
@@ -11,16 +11,18 @@ import axios from "axios";
 import { useCartContext } from "../context/cart_context";
 import { useUserContext } from "../context/user_context";
 import { formatPrice } from "../utils/helpers";
+import { useNavigate } from "react-router-dom";
 
 const promise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY!);
 
 const CheckoutForm = () => {
+  const navigate = useNavigate();
   const { cart, total_amount, shipping_fee, clearCart } = useCartContext();
   const { myUser } = useUserContext();
 
   //STRIPE STUFF
   const [succeeded, setSucceeded] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState("");
   const [processing, setProcessing] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [clientSecret, setCLientSecret] = useState("");
@@ -48,7 +50,7 @@ const CheckoutForm = () => {
 
   const createPaymentIntent = async () => {
     try {
-      const data = await axios.post(
+      const { data } = await axios.post(
         "/.netlify/functions/create-payment-intent",
         JSON.stringify({
           cart,
@@ -56,18 +58,59 @@ const CheckoutForm = () => {
           shipping_fee,
         })
       );
-    } catch (error) {}
+      setCLientSecret(data.clientSecret);
+    } catch (error: any) {
+      // console.log(error);
+    }
   };
 
   useEffect(() => {
     createPaymentIntent();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleSubmit = async (event: any) => {};
-  const handleChange = async (event: any) => {};
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setProcessing(true);
+    const payload = await stripe?.confirmCardPayment(clientSecret, {
+      payment_method: {
+        card: elements?.getElement(CardElement)!,
+      },
+    });
+    if (payload?.error) {
+      setError(`Payment failed ${payload?.error.message}`);
+      setProcessing(false);
+    } else {
+      setError("");
+      setProcessing(false);
+      setSucceeded(true);
+      setTimeout(() => {
+        clearCart();
+        navigate("/");
+      }, 6000);
+    }
+  };
 
+  const handleChange = async (event: StripeCardElementChangeEvent) => {
+    setDisabled(event.empty);
+    setError(event.error ? event.error.message : "");
+  };
+  console.log(myUser);
   return (
     <div>
+      {succeeded ? (
+        <article>
+          <h4>Thank You</h4>
+          <h4>Your Payment was successful</h4>
+          <h4>Redirecting to Home Page Shortly</h4>
+        </article>
+      ) : (
+        <article>
+          <h4>Hello, {myUser && myUser.name}</h4>
+          <p>Your total is {formatPrice(shipping_fee + total_amount)}</p>
+          <p>Test Card Number : 4242 4242 4242 4242</p>
+        </article>
+      )}
       <form id="payment-form" onSubmit={handleSubmit}>
         <CardElement
           id="card-element"
