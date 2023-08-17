@@ -1,17 +1,22 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import heroBcg from "../assets/hero-bcg.jpeg";
-import heroBcg2 from "../assets/hero-bcg-2.jpeg";
+// import heroBcg from "../assets/hero-bcg.jpeg";
+import heroBcg from "../assets/hero-bcg.svg";
+// import heroBcg2 from "../assets/hero-bcg-2.jpeg";
+import ghost from "../assets/undraw_ghost.svg";
 
 const Hero = () => {
   return (
     <Wrapper className="section-center">
       <article className="content">
         <h1>
-          Design your
+          Kabooooom!!{" "}
+          <span className="mini-logo">
+            <img src={ghost} alt="" className="bounce-in-right" />
+          </span>
           <br />
-          comfort zone
+          Ghost T-shirts
         </h1>
         <p>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti
@@ -23,8 +28,8 @@ const Hero = () => {
         </Link>
       </article>
       <article className="img-container">
-        <img src={heroBcg} alt="nice table" className="main-img" />
-        <img src={heroBcg2} alt="Person Working" className="accent-img" />
+        <img src={heroBcg} alt="Skull Changing clothes" className="main-img" />
+        {/* <img src={heroBcg2} alt="Person Working" className="accent-img" /> */}
       </article>
     </Wrapper>
   );
@@ -34,6 +39,33 @@ const Wrapper = styled.section`
   min-height: 60vh;
   display: grid;
   place-items: center;
+  .mini-logo {
+    width: 3rem;
+    height: 3rem;
+    position: relative;
+    top: 1rem;
+    left: 40%;
+  }
+  .bounce-in-right {
+    animation: bounce-in-right 2s ease forwards;
+  }
+  @keyframes bounce-in-right {
+    0% {
+      opacity: 0;
+      transform: translateX(2000px);
+    }
+    60% {
+      opacity: 1;
+      transform: translateX(-30px);
+    }
+    80% {
+      transform: translateX(10px);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+
   .img-container {
     display: none;
   }
@@ -48,7 +80,7 @@ const Wrapper = styled.section`
   @media (min-width: 992px) {
     height: calc(100vh - 5rem);
     grid-template-columns: 1fr 1fr;
-    gap: 8rem;
+    gap: 2rem;
     h1 {
       margin-bottom: 2rem;
     }
@@ -62,6 +94,9 @@ const Wrapper = styled.section`
     .img-container {
       display: block;
       position: relative;
+    }
+    .mini-logo {
+      left: 0;
     }
     .main-img {
       width: 100%;
@@ -82,7 +117,7 @@ const Wrapper = styled.section`
     .img-container::before {
       content: "";
       position: absolute;
-      width: 10%;
+      width: 100%;
       height: 80%;
       background: var(--clr-primary-9);
       bottom: 0%;

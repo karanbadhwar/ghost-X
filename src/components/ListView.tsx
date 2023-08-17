@@ -35,7 +35,7 @@ const Wrapper = styled.section`
     display: block;
     width: 300px;
     height: 200px;
-    object-fit: cover;
+    object-fit: contain;
     border-radius: var(--radius);
     margin-bottom: 1rem;
   }
